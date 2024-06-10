@@ -27,9 +27,11 @@
     "postinstall": "npx prisma migrate dev --name hello"
   },
   "dependencies": {
+    "@abandonware/noble": "^1.9.2-25",
     "@prisma/client": "^5.14.0",
     "fs-extra": "^11.2.0",
     "https-proxy-agent": "^7.0.4",
+    "mi-gpt": "^3.0.1",
     "mi-service-lite": "^2.4.0",
     "openai": "^4.47.3",
     "prisma": "^5.14.0"

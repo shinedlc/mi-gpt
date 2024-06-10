@@ -7,6 +7,7 @@ import { QueryMessage, SpeakerAnswer } from "../speaker/speaker";
 import { StreamResponse } from "../speaker/stream";
 import { IBotConfig } from "./config";
 import { ConversationManager, MessageContext } from "./conversation";
+import { blecamera } from "../../bleCamera/blecamera";
 
 const systemTemplate = `
 请重置所有之前的上下文、文件和指令。现在，你将扮演一个名为{{botName}}的角色，使用第一人称视角回复消息。
@@ -148,8 +149,43 @@ export class MyBot {
     if (!memory) {
       return {};
     }
+    const imageMessages = blecamera.imageDescriptions
+    let systemMessage = ''
+    if (imageMessages.length > 0) {
+      let combined = '';
+            let i = 0;
+            for (let p of imageMessages) {
+                combined + '\n\图片 #' + i + '\n\n';
+                combined += p;
+                i++;
+            }
+            systemMessage = `
+                你是一个需要通读图像描述并回答用户问题的智能人工智能 
+                
+                以下是提供的图像：
+                ${combined}
+
+                不要在回答中提及图片、场景或描述，只回答问题即可。
+                不要试图概括或提供可能的场景。
+                仅使用图像描述中的信息来回答问题。
+                简明扼要。
+            `
+            console.log(systemMessage);
+    }
+
     const ctx = { bot, master, room } as MessageContext;
-    const lastMessages = await this.manager.getMessages({ take: 10 });
+    // const lastMessages = await this.manager.getMessages({ take: 10 });
+    // if (lastMessages.length > 0) {
+    //   systemMessage = lastMessages
+    //   .map((e) =>
+    //     formatMsg({
+    //       name: e.sender.name,
+    //       text: e.text,
+    //       timestamp: e.createdAt.getTime(),
+    //     })
+    //   )
+    //   .join("\n") + systemMessage
+    // }
     const shortTermMemories = await memory.getShortTermMemories({ take: 1 });
     const shortTermMemory = shortTermMemories[0]?.text ?? "短期记忆为空";
     const longTermMemories = await memory.getLongTermMemories({ take: 1 });
@@ -163,18 +199,7 @@ export class MyBot {
       masterProfile: master!.profile.trim(),
       roomName: room!.name,
       roomIntroduction: room!.description.trim(),
-      messages:
-        lastMessages.length < 1
-          ? "暂无历史消息"
-          : lastMessages
-              .map((e) =>
-                formatMsg({
-                  name: e.sender.name,
-                  text: e.text,
-                  timestamp: e.createdAt.getTime(),
-                })
-              )
-              .join("\n"),
+      messages:systemMessage
     });
     const userPrompt = buildPrompt(userTemplate, {
       message: formatMsg({
