@@ -168,7 +168,6 @@ export class MyBot {
                 不要在回答中提及图片、场景或描述，只回答问题即可。
                 不要试图概括或提供可能的场景。
                 仅使用图像描述中的信息来回答问题。
-                简明扼要。
             `
             console.log(systemMessage);
     }

@@ -97,10 +97,10 @@ class bleCamera {
             }
         } else {
             if (id === null) {
-                console.log('Photo received', this.buffer);
+                //console.log('Photo received', this.buffer);
                 //this.saveImage(buffer)
                 this.imageDescription(this.buffer).then(description => {
-                    console.log('图片描述:', description);
+                    //console.log('图片描述:', description);
                     this.imageDescriptions.push(description);
                 });
                 if (this.imageDescriptions.length > 3) {
@@ -170,9 +170,9 @@ class bleCamera {
         try {
             // 发送请求并等待响应
             const response = await backoff<any>(async () => {
-                // 创建一个axios实例
-                const axiosInstance = axios.create();
-                // 添加请求拦截器
+            // 创建一个axios实例
+            const axiosInstance = axios.create();
+            // 屏蔽局域网请求代理
             axiosInstance.interceptors.request.use(config => {
                 config.httpsAgent = null;
                 config.proxy = false;
@@ -180,14 +180,14 @@ class bleCamera {
             }, error => {
                 return Promise.reject(error);
             });
-                const response = await axiosInstance.post("http://192.168.123.161:11434/api/chat", {
-                    stream: false,
-                    model: args.model,
-                    messages: converted,
-                });
+            const response = await axiosInstance.post( process.env.OLLAMA_IMAGE_MODEL_API ? process.env.OLLAMA_IMAGE_MODEL_API : "http://127.0.0.1:11434/api/chat", {
+                stream: false,
+                model: args.model,
+                messages: converted,
+            });
 
-                // 解析响应数据
-                return response.data;
+            // 解析响应数据
+            return response.data;
             });
             return trimIdent((response.message.content as string));
         } catch (error) {
