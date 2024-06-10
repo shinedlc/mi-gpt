@@ -2,12 +2,18 @@
 
 Camera硬件使用的是OpenGlass项目中的硬件
 
-![WechatIMG732.png](esp.png)
+![ESP32S3](esp.png)
 
 请先安装好mi-gpt支持库，再安装ble蓝牙支持库
 
 ```shell
 npm install @abandonware/noble
+```
+
+安装启动多模态图片解析大模型API库，参考[https://ollama.com](https://ollama.com)
+
+```shell
+ollama run llava
 ```
 
 编译启动项目
@@ -26,6 +32,6 @@ npm start
 
 ## ❤️ 鸣谢
 
-- <https://github.com/yihong0618/xiaogpt>
-- <https://github.com/inu1255/mi-service>
-- 
+- <https://github.com/idootop/mi-gpt.git>
+- <https://github.com/BasedHardware/OpenGlass.git>
+- <https://github.com/tigoe/BluetoothLE-Examples.git>
